@@ -38,13 +38,58 @@ class DisbursementController extends Controller
             'remark' => $request->remark
         ];
         
-        $result = $this->apiService->sendDisbursement($data);
-        
+        $result = json_encode($this->apiService->sendDisbursement($data));
+        $body = collect();
+
+        try {
+            $disbursement = new Disbursement();
+    
+            $disbursement->id = $body->id;
+            $disbursement->amount = $body->amount;
+            $disbursement->status = $body->status;
+            $disbursement->bank_code = $body->bank_code;
+            $disbursement->account_number = $body->account_number;
+            $disbursement->beneficiary_name = $body->beneficiary_name;
+            $disbursement->remark = $body->remark;
+            $disbursement->receipt = $body->receipt;
+            $disbursement->time_served = $body->time_served;
+            $disbursement->fee = $body->fee;
+            $disbursement->timestamp = $body->timestamp;
+
+            $output = $disbursement->save();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        return redirect()->back();
     }
 
     public function check($id)
     {
         $result = $this->apiService->getDisbursementStatus($id);
 
+        
+        try {
+            $body = collect();
+    
+            $disbursement = Disbursement::findOrFail($id);
+    
+            $disbursement->id = $body->id;
+            $disbursement->amount = $body->amount;
+            $disbursement->status = $body->status;
+            $disbursement->bank_code = $body->bank_code;
+            $disbursement->account_number = $body->account_number;
+            $disbursement->beneficiary_name = $body->beneficiary_name;
+            $disbursement->remark = $body->remark;
+            $disbursement->receipt = $body->receipt;
+            $disbursement->time_served = $body->time_served;
+            $disbursement->fee = $body->fee;
+            $disbursement->timestamp = $body->timestamp;
+    
+            $output = $disbursement->save();
+    
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
