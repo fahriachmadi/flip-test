@@ -14,7 +14,7 @@ class CreateDisbursementsTable extends Migration
     public function up()
     {
         Schema::create('disbursements', function (Blueprint $table) {
-            $table->bigInteger('id');
+            $table->bigIncrements('id');
             $table->integer('amount')->nullable();
             $table->string('status')->nullable();
             $table->string('bank_code')->nullable();
