@@ -14,6 +14,3 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'DisbursementController@index');
-
-Route::post('send-disbursement', 'DisbursementController@send');
-Route::get('check-status', 'DisbursementController@check');

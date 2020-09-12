@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Disbursement;
 use Tests\TestCase;
 
 class DisbursementTest extends TestCase
@@ -11,16 +12,10 @@ class DisbursementTest extends TestCase
      *
      * @return void
      */
-    public function testForm()
-    {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
 
     public function testSend()
     {
-        $response = $this->postJson('/send-disbursement', [
+        $response = $this->postJson('/api/send', [
             'bank_code' => 'bni',
             'account_number' => '1234567890',
             'amount' => 10000,
@@ -28,16 +23,29 @@ class DisbursementTest extends TestCase
         ]);
 
         $response
-            ->assertStatus(201)
+            ->assertStatus(200)
             ->assertJson([
-                'created' => true,
+                "success"=> true,
             ]);
     }
 
     public function testCheck()
     {
-        $response = $this->get('/check-status');
+        $find = Disbursement::all()->first();
+        $response = $this->get('/api/status/'.$find->id);
 
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                "success"=> true,
+            ]);
     }
+
+    public function testNotFound()
+    {
+        $response = $this->get('/api/status/3');
+
+        $response->assertStatus(404);
+    }
+
 }

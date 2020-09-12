@@ -40,7 +40,37 @@ For testing application ...
 $ php artisan test
 ```
 
+### API Endpoint
 
-----
+Base dev url : http://localhost:8000/
+
+_Send Disbursement_
+
+Field:
+- `bank_code`
+- `account_number`
+- `amount`
+- `remark`
+```http
+POST send HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+```
+
+_Check Status_
+```http
+GET /send/{transaction_id} HTTP/1.1
+```
+
+### Step to send Request via UI
+- Open : http://localhost:8000/
+- Fill in field
+- Submit Button
+
+### Step to check status via UI
+- Open : http://localhost:8000/check-status
+- Fill in field transaction id
+- Submit Button
+
+
 
 Created by Fahri Achmadi with Laravel

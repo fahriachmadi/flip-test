@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 class FlipAPIService
 {
   protected $client;
-  protected $headers;
+  protected $auth;
 
   public function __construct()
   {
@@ -14,37 +14,29 @@ class FlipAPIService
       'base_uri' => env('API_BASE_URL'),
     ]);
 
-    $this->headers = [
-      'Authorization' => 'Basic ' . env('SECRET_KEY'),        
+    $this->auth = [
+        env('SECRET_KEY'),
+        ''        
     ];
   }
 
   public function getDisbursementStatus($id)
   {
-    $res = $this->client->request('GET',  'disburse/'.$id, ['headers' => $this->headers]);
+    $res = $this->client->request('GET',  'disburse/'.$id, ['auth' => $this->auth]);
 
-    $response = [
-      'status' => $res->getStatusCode(),
-      'body' => $res->getBody()
-    ];
-    
-    return $response;
+    return $this->response_handler($res->getBody()->getContents());
   }
 
   public function sendDisbursement($payload)
   {
 
     $res = $this->client->request('POST',  'disburse', [
-      'headers' => $this->headers,
+      'auth' => $this->auth,
       'form_params' => $payload
     ]);
     
-    $response = [
-      'status' => $res->getStatusCode(),
-      'body' => $res->getBody()
-    ];
-    dd($response);die();
-    return $response;
+
+    return $this->response_handler($res->getBody()->getContents());
   }
 
   public function response_handler($response)
@@ -54,5 +46,5 @@ class FlipAPIService
 		}
 		
 		return [];
-	}
+  }
 }

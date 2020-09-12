@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiBaseMethod;
 use App\Disbursement;
 use App\Util\FlipAPIService;
 use Illuminate\Http\Request;
@@ -37,10 +38,9 @@ class DisbursementController extends Controller
             'amount' => $request->amount,
             'remark' => $request->remark
         ];
+            
         
-        $result = json_encode($this->apiService->sendDisbursement($data));
-        $body = collect();
-
+        $body = $this->apiService->sendDisbursement($data);
         try {
             $disbursement = new Disbursement();
     
@@ -55,41 +55,33 @@ class DisbursementController extends Controller
             $disbursement->time_served = $body->time_served;
             $disbursement->fee = $body->fee;
             $disbursement->timestamp = $body->timestamp;
-
-            $output = $disbursement->save();
-        } catch (\Throwable $th) {
-            //throw $th;
+            $disbursement->save();
+            
+            return ApiBaseMethod::sendResponse($disbursement, null);
+        } catch (\Exception $e) {
+            return ApiBaseMethod::sendError($e->getMessage(), [], 500);
         }
-        return redirect()->back();
     }
 
-    public function check($id)
+    public function status($id)
     {
-        $result = $this->apiService->getDisbursementStatus($id);
-
-        
         try {
-            $body = collect();
-    
-            $disbursement = Disbursement::findOrFail($id);
-    
-            $disbursement->id = $body->id;
-            $disbursement->amount = $body->amount;
+            $disbursement = Disbursement::where('id', $id)->first();
+
+            if(!$disbursement) {
+                return ApiBaseMethod::sendError('Transaction Not Found');
+            }
+
+            $body = $this->apiService->getDisbursementStatus($id);
+
             $disbursement->status = $body->status;
-            $disbursement->bank_code = $body->bank_code;
-            $disbursement->account_number = $body->account_number;
-            $disbursement->beneficiary_name = $body->beneficiary_name;
-            $disbursement->remark = $body->remark;
             $disbursement->receipt = $body->receipt;
             $disbursement->time_served = $body->time_served;
-            $disbursement->fee = $body->fee;
-            $disbursement->timestamp = $body->timestamp;
-    
             $output = $disbursement->save();
-    
-            return redirect()->back();
-        } catch (\Throwable $th) {
-            throw $th;
+
+            return ApiBaseMethod::sendResponse($disbursement, null);
+        } catch (\Exception $e) {
+            return ApiBaseMethod::sendError($e->getMessage(), [], 500);
         }
     }
 }
