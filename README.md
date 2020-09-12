@@ -26,8 +26,9 @@ $ cd flip-test
 $ cp .env-example .env
 Configure env with your local DB configuration
 
-Install dependencies and migrate DB
+Install dependencies, generate key, and migrate DB
 $ composer install
+$ php artisan key:generate
 $ php artisan migrate
 
 Run service
@@ -63,13 +64,21 @@ GET /send/{transaction_id} HTTP/1.1
 
 ### Step to send Request via UI
 - Open : http://localhost:8000/
-- Fill in field
-- Submit Button
+- Fill in field account number, bank code, amount, and remark
+- Click Submit Button
+- See output in white box
 
 ### Step to check status via UI
 - Open : http://localhost:8000/check-status
 - Fill in field transaction id
-- Submit Button
+- Click Submit Button
+- See output in white box 
+
+
+### Notes
+- Can deploy to heroku with configuration first
+- Jobs and queue still not work
+
 
 
 
