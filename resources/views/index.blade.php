@@ -100,7 +100,7 @@
                 'bank_code' : $('#bank_code').val(),
                 'amount' : $('#amount').val(),
                 'account_number' : $('#account_number').val(),
-               'remark' : $('#remark').val()
+                'remark' : $('#remark').val()
               };
               $('#buttonSend').prop('disabled', true)
 
@@ -110,9 +110,10 @@
                 data: data,
                 url: "/api/send",
                 success: function(response) {
-                  $('#output .status').html(response.success);
+                  $('#output .status').html(response.status);
                   $('#output .data').html(JSON.stringify(response.data));
                   $('#buttonSend').prop('disabled', false)
+                  emptyForm()
                 },
                 error: function(err) {
                     $('#buttonSend').prop('disabled', false)
@@ -124,15 +125,17 @@
             }
 
             function checkStatus() {
-              let id =  $('#transaction_id').val()
-              $('#buttonCheckStatus').prop('disabled', true)
+              let id =  $('#transaction_id').val();
+              $('#buttonCheckStatus').prop('disabled', true);
+
               $.ajax({
                 type: "GET",
                 url: "/api/status/"+id,
                 success: function(response) {
                     $('#buttonCheckStatus').prop('disabled', false)
-                    $('#output .status').html(response.success);
+                    $('#output .status').html(response.status);
                     $('#output .data').html(JSON.stringify(response.data));
+                    emptyForm()
                 },
                 error: function(err) {
                     console.error("Error:", err);
@@ -141,6 +144,14 @@
                     $('#buttonCheckStatus').prop('disabled', false)
                 },
               });
+            }
+
+            function emptyForm() { 
+              $('#transaction_id').val('');
+              $('#bank_code').val('');
+              $('#amount').val('');
+              $('#account_number').val('');
+              $('#remark').val('');
             }
           })
         </script>

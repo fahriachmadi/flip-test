@@ -40,8 +40,8 @@ class DisbursementController extends Controller
         ];
             
         
-        $body = $this->apiService->sendDisbursement($data);
         try {
+            $body = $this->apiService->sendDisbursement($data);
             $disbursement = new Disbursement();
     
             $disbursement->id = $body->id;

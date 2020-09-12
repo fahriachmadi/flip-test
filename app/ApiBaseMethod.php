@@ -15,7 +15,8 @@ class ApiBaseMethod extends Model
     {
 
         $response = [
-            'success' => true,
+            'success' => 'true',
+            'status' => '200',
             'data'    => $result,
             'message' => $message,
         ];
@@ -33,6 +34,7 @@ class ApiBaseMethod extends Model
     {
         $response = [
             'success' => false,
+            'status' => $code,
             'message' => $error,
         ];
 
